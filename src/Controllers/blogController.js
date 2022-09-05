@@ -12,6 +12,9 @@ const createBlog = async (req, res) => {
         if (!authId) {
             return res.status(401).send({ error: "!!Oops author id is invalid!!" })
         }
+        if(data.isPublished===true){
+            data.publishedAt=Date.now()
+        }
         let savedata = await blogModel.create(data)
         return res.status(201).send({ data: savedata })
     } catch (err) {
@@ -19,19 +22,23 @@ const createBlog = async (req, res) => {
     }
 }
 
-// const getBlog = async (req, res) => {
-//     try {
-//         let data = req.body
-//         let combination = req.query
-//         if (data.isDeleted === true && data.isPublished === false){
-//             res.status(404).send({error:" DATA NOT FOUND "})
-//         }else{
-//         let dataBlog =await blogModel.find()
-
-//         }
-
-
-//     }catch(error)
-// }
-
-module.exports = { createBlog }
+const getBlogs = async (req, res) => {
+    // try {
+        // let data = req.body
+        //let combination = req.query
+       // console.log(combination)
+        // if (data.isDeleted === true && data.isPublished === false){
+        //     res.status(404).send({error:" DATA NOT FOUND "})
+        // }else{
+        let dataBlog =await blogModel.find({isDeleted:false,isPublished:true})
+        console.log(dataBlog)
+    if (dataBlog.length==0){
+        res.status(404).send({error:" DATA NOT FOUND "})
+    }
+        return res.status(201).send({ data: dataBlog })
+    // } catch (err) {
+    //     res.status(500).send({ status: false, error: err.message })
+    // }
+}
+        
+module.exports = { createBlog,getBlogs }
