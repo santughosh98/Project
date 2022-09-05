@@ -23,22 +23,16 @@ const createBlog = async (req, res) => {
 }
 
 const getBlogs = async (req, res) => {
-    // try {
-        // let data = req.body
-        //let combination = req.query
-       // console.log(combination)
-        // if (data.isDeleted === true && data.isPublished === false){
-        //     res.status(404).send({error:" DATA NOT FOUND "})
-        // }else{
-        let dataBlog =await blogModel.find({isDeleted:false,isPublished:true})
-        console.log(dataBlog)
-    if (dataBlog.length==0){
-        res.status(404).send({error:" DATA NOT FOUND "})
-    }
+     try {
+        let combination = req.query
+        let dataBlog =await blogModel.find({$and:[{isDeleted:false,isPublished:true},combination]})
+    if (dataBlog==0){
+        return res.status(404).send({error:" DATA NOT FOUND "})
+    }else 
         return res.status(201).send({ data: dataBlog })
-    // } catch (err) {
-    //     res.status(500).send({ status: false, error: err.message })
-    // }
+    } catch (err) {
+        res.status(500).send({ status: false, error: err.message })
+    }
 }
         
 module.exports = { createBlog,getBlogs }
