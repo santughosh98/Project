@@ -49,16 +49,15 @@ const updateBlog = async function (req, res) {
 }catch(err){res.status(500).sent({error:err.message})}
 }
 
+//<<<<<<<<<<<<deletion1>...................
 
 const deleteBlogs = async (req, res) => {
     try {
         let BlogId = req.params.blogId
-        let findData = await blogModel.findById( BlogId).select({ _id: 0, isDeleted: 1 })
-        if (!findData) {
+        let findData = await blogModel.find({ $and: [{ isDeleted: false},{_id:BlogId}]})
+        if (findData.length==0) {
             return res.status(404).send({ status: false, msg: "no blog found" })
-        } else if (findData.isDeleted === true) {
-            return res.send({ status: false, msg: "Data is already deleted" })
-        } else {
+         } else {
             let findData2 = await blogModel.findOneAndUpdate({ _id: BlogId },
                 { $set: { isDeleted: true, deletedAt: Date.now() } },
                 { new: true })
@@ -70,32 +69,19 @@ const deleteBlogs = async (req, res) => {
 
 }
 
+//<<<<<<<<<<<<deletion2............>...................
 
 const deleteBlogs2 = async (req,res)=>{
     try{
         let data=req.query
-        let blog= await blogModel.find(data)
+        let blog= await blogModel.find({ $and: [{ isDeleted: false, isPublished: false },data]})
         if(blog==0){return res.status(404).send("no any blog matching")}
-        for(let i in blog){
-            if(blog[i].isDeleted==true){return res.status(404).send({msg:"data already deleted"})}}
             let deleteBlogData = await blogModel.updateMany(data,
                 { $set: { isDeleted:true, deletedAt: Date.now() } },
                 { new: true })
-            return res.status(200).send({ status: true, succesfullyDeleted: "deletion of blog completed" })
+            return res.status(200).send({ status: true, Deleted: "deletion of blog is completed" })
     }catch(err){res.send(err.message)}
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 module.exports = { createBlog, getBlogs, updateBlog, deleteBlogs, deleteBlogs2 }
