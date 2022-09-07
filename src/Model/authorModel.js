@@ -4,6 +4,7 @@ const emailValidation =require("validator")
 const authorSchema = new mongoose.Schema({
     fname: {
         type: String,
+       // match:/<< $& >>/,
         required: true,
         trim:true
     },

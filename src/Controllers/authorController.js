@@ -1,18 +1,26 @@
 const authorModel = require("../Model/authorModel")
 const jwt = require("jsonwebtoken");
 const validEmail = /.+\@.+\..+/
+const stringvalid =/<< $& >>/
 
 
 const createAuthor = async (req, res) => {
     try {
         let data = req.body;
-        let { fname, lname, title, email } = DataView
-        let valid = validEmail.test(email)
-        if (!valid) { return res.status(401).send({ data: "email id is in invalid format" }) }
+        let { fname, lname, title, email,password } = data
         if (!fname) { return res.status(400).send({ status: false, msg: "First Name is required...!" }) }
-        if (!lname) { return res.status(400).send({ status: false, msg: "First Name is required...!" }) }
-        if (!title) { return res.status(400).send({ status: false, msg: "First Name is required...!" }) }
-
+        if (!lname) { return res.status(400).send({ status: false, msg: "last Name is required...!" }) }
+        if (!title) { return res.status(400).send({ status: false, msg: "titlr is required...!" }) }
+        let validFn=stringvalid.test(fname)
+        if (!validFn) { return res.status(401).send({ data: "first name id is in invalid format" }) }
+        let validLn=stringvalid.test(lname)
+        if (!validLn) { return res.status(401).send({ data: "last name id is in invalid format" }) }
+        let validT=stringvalid.test(title)
+        if (!validT) { return res.status(401).send({ data: "title is in invalid format" }) }
+        let validE = validEmail.test(email)
+        if (!validE) { return res.status(401).send({ data: "email id is in invalid format" }) }
+        let validP=stringvalid.test(password)
+        if (!validP) { return res.status(401).send({ data: "title is in invalid format" }) }
         let savedData = await authorModel.create(data)
         return res.status(201).send({ data: savedData })
 
