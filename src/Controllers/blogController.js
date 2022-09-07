@@ -6,12 +6,14 @@ const mongoose = require ('mongoose')
 const createBlog = async (req, res) => {
     try {
         let data = req.body;
-        let {title,authorId} = data
+        let {title,authorId,category,body} = data
 
         // ==Mandatory_fields== \\
         if(Object.keys(data).length==0) return res.status(400).send({ error: "incomplete input" })
+        
         if(!title) return res.status(400).send({ error: "Title is required" })
-
+        if(!body) return res.status(400).send({ error: "body is required" })
+        if(!category) return res.status(400).send({ error: "category is required" })
         if (!authorId) {return res.status(400).send({ error: "author id required" })}
         if(!mongoose.Types.ObjectId.isValid(authorId)) {
         return res.status(400).send({ error: "!!Oops author id is not valid" })
