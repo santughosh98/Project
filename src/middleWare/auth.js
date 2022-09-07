@@ -3,11 +3,11 @@ const jwt = require("jsonwebtoken");
 
 const authenticate = async (req, res, next) => {
     try {
-        let token = req.headers["x-api-key"] 
-        if (!token) return res.status(401).send({ status: false, msg: "Authentication failed" })
+        let token = req.headers["x-api-key"]
+        if (!token) return res.status(401).send({ status: false, msg: "token is required" })
         jwt.verify(token, "group-09-secretkey", function (error, decoded) {
             if (error) {
-                return res.status(401).send({ msg: error.message })
+                return res.status(401).send({ msg: "Authentication failed" })
             } else {
                 req.token = decoded
                 next()
@@ -21,9 +21,9 @@ const authorize = async (req, res, next) => {
     try {
         let blogId = req.params.blogId
         const blog = await blogModel.findById(blogId)
-        if(!blog){ return res.status(404).send({ status: false, msg: "blog not found" })}
+        if (!blog) { return res.status(404).send({ status: false, msg: "blog not found" }) }
         let tokenUser = req.token.userId
-        let logUser = blog.authorId.toString()  
+        let logUser = blog.authorId.toString()
         if (tokenUser !== logUser) {
             res.status(403).send({ status: false, msg: "you are not authorized" })
         } else {

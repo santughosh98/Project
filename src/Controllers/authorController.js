@@ -6,9 +6,9 @@ const validEmail = /.+\@.+\..+/
 const createAuthor = async (req, res) => {
     try {
         let data = req.body;
-        let { fname, lname, title } = DataView
-        let valid = validEmail.test(data.email)
-        if (!valid) { return res.status(401).send({ data: "savedData" }) }
+        let { fname, lname, title, email } = DataView
+        let valid = validEmail.test(email)
+        if (!valid) { return res.status(401).send({ data: "email id is in invalid format" }) }
         if (!fname) { return res.status(400).send({ status: false, msg: "First Name is required...!" }) }
         if (!lname) { return res.status(400).send({ status: false, msg: "First Name is required...!" }) }
         if (!title) { return res.status(400).send({ status: false, msg: "First Name is required...!" }) }
@@ -40,7 +40,7 @@ const login = async (req, res) => {
                         team: "Group-09"
                     }, "group-09-secretkey");   //2nd input which is very very hard to guess
                 res.setHeader("x-api-key", token);
-                res.send({ status: true, token: token });
+                res.status().send({ status: true, msg: "login succesfully " });
             }
         }
     } catch (err) {
