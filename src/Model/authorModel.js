@@ -1,4 +1,5 @@
 const mongoose = require("mongoose")
+const emailValidation =require("validator")
 
 const authorSchema = new mongoose.Schema({
     fname: {
@@ -19,7 +20,8 @@ const authorSchema = new mongoose.Schema({
     },
     email: {
         type: String,
-        match: /.+\@.+\..+/,//"email id is invalid",
+       // match: /.+\@.+\..+/,//"email id is invalid",
+       //validate:[emailValidation.isEmail,"is inValid"],
         required: true,
         unique: true,
         trim:true

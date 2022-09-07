@@ -1,20 +1,34 @@
 const blogModel = require("../Model/blogModel")
 const authorModel = require("../Model/authorModel");
-//----------------------------------create blog------------------------------------------------//
+const mongoose = require ('mongoose')
+
+//-------------------------------------create blog------------------------------------------------//
 const createBlog = async (req, res) => {
     try {
         let data = req.body;
-        if (!data.authorId) {return res.status(400).send({ error: "author id required" })}
-        let authId = await authorModel.findById(data.authorId)
-        if (!authId) { return res.status(401).send({ error: "!!Oops author id is invalid!!" })}
-        if (data.isPublished === true) { data.publishedAt = Date.now()}
+        let {title,authorId} = data
+
+        // ==Mandatory_fields== \\
+        if(Object.keys(data).length==0) return res.status(400).send({ error: "incomplete input" })
+        if(!title) return res.status(400).send({ error: "Title is required" })
+
+        if (!authorId) {return res.status(400).send({ error: "author id required" })}
+        if(!mongoose.Types.ObjectId.isValid(authorId)) {
+        return res.status(400).send({ error: "!!Oops author id is not valid" })
+        }
+        // ==Duplication== \\
+        let authId = await authorModel.findById(authorId)
+        if (!authId) { return res.status(404).send({ error: "!!Oops author id doesn't exist" })}
+
+        if (data.isPublished === true){data.publishedAt = Date.now()}
         let savedata = await blogModel.create(data)
         return res.status(201).send({ data: savedata })
     } catch (err) {
         res.status(500).send({ status: false, error: err.message })
     }
 }
-//--------------------------------------fetching blogs-----------------------------------//
+
+//------------------------------------------fetching blogs-----------------------------------------//
 const getBlogs = async (req, res) => {
     try {
         let combination = req.query
@@ -22,7 +36,7 @@ const getBlogs = async (req, res) => {
         if (dataBlog == 0) {
             return res.status(404).send({ error: " DATA NOT FOUND " })
         } else
-            return res.status(201).send({ data: dataBlog })
+            return res.status(200).send({ data: dataBlog })
     } catch (err) {
         res.status(500).send({ status: false, error: err.message })
     }
@@ -36,7 +50,7 @@ const updateBlog = async function (req, res) {
     let data = req.params.blogId
     let update = req.body
     let alert = await blogModel.findOne({ _id: data, isDeleted: true })
-    if (alert) return res.status(404).send({ msg: "Blog deleted" })
+    if (alert) return res.status(404).send({ msg: "no blog found" })
     let blogs = await blogModel.findOneAndUpdate({ _id: data },
         {
             $set: {
@@ -44,7 +58,7 @@ const updateBlog = async function (req, res) {
                 publishedAt: Date.now()
             },
             $push: { tags: update.tags, subcategory: update.subcategory }
-        }, { new: true })
+        }, { new: true}) // , upsert: true 
     return res.status(200).send({ status: true, msg: blogs })
 }catch(err){res.status(500).sent({error:err.message})}
 }
@@ -54,14 +68,14 @@ const updateBlog = async function (req, res) {
 const deleteBlogs = async (req, res) => {
     try {
         let BlogId = req.params.blogId
-        let findData = await blogModel.find({ $and: [{ isDeleted: false},{_id:BlogId}]})
+        let findData = await blogModel.find({ _id:BlogId,isDeleted: false})
         if (findData.length==0) {
             return res.status(404).send({ status: false, msg: "no blog found" })
          } else {
             let findData2 = await blogModel.findOneAndUpdate({ _id: BlogId },
                 { $set: { isDeleted: true, deletedAt: Date.now() } },
                 { new: true })
-            return res.status(200).send({ status: true, msg: "data deleted" })
+            return res.status(200).send({ status: true, msg: "data deleted succesfully" })
         }
     } catch (err) {
         res.status(500).send({ status: false, msg: err.message })
