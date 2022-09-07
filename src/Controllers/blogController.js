@@ -7,9 +7,7 @@ const createBlog = async (req, res) => {
     try {
         let data = req.body;
         let {title,authorId,category,body} = data
-
-        // ==Mandatory_fields== \\
-        if(Object.keys(data).length==0) return res.status(400).send({ error: "incomplete input" })
+        if(Object.keys(data).length==0) return res.status(400).send({ error: "Please give input" })
         
         if(!title) return res.status(400).send({ error: "Title is required" })
         if(!body) return res.status(400).send({ error: "body is required" })
@@ -23,8 +21,8 @@ const createBlog = async (req, res) => {
         if (!authId) { return res.status(404).send({ error: "!!Oops author id doesn't exist" })}
 
         if (data.isPublished === true){data.publishedAt = Date.now()}
-        let savedata = await blogModel.create(data)
-        return res.status(201).send({ data: savedata })
+        let savedData = await blogModel.create(data)
+        return res.status(201).send({ data: savedData })
     } catch (err) {
         res.status(500).send({ status: false, error: err.message })
     }
@@ -65,7 +63,7 @@ const updateBlog = async function (req, res) {
 }catch(err){res.status(500).sent({error:err.message})}
 }
 
-//<<<<<<<<<<<<deletion1>...................
+//....................deletion1..............................................................
 
 const deleteBlogs = async (req, res) => {
     try {
@@ -85,7 +83,7 @@ const deleteBlogs = async (req, res) => {
 
 }
 
-//<<<<<<<<<<<<deletion2............>...................
+//..............................deletion2...............................
 
 const deleteBlogs2 = async (req,res)=>{
     try{

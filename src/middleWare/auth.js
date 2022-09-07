@@ -1,10 +1,11 @@
 const blogModel = require("../Model/blogModel")
 const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
 
 const authenticate = async (req, res, next) => {
     try {
         let token = req.headers["x-api-key"] 
-        if (!token) return res.status(401).send({ status: false, msg: "Authentication failed" })
+        if (!token) return res.status(401).send({ status: false, msg: "please enter token" })
         jwt.verify(token, "group-09-secretkey", function (error, decoded) {
             if (error) {
                 return res.status(401).send({ msg: error.message })
@@ -20,12 +21,15 @@ const authenticate = async (req, res, next) => {
 const authorize = async (req, res, next) => {
     try {
         let blogId = req.params.blogId
+        if(!mongoose.Types.ObjectId.isValid(blogId)) {
+            return res.status(400).send({ error: "!!Oops blogId id is not valid" })
+            }
         const blog = await blogModel.findById(blogId)
         if(!blog){ return res.status(404).send({ status: false, msg: "blog not found" })}
         let tokenUser = req.token.userId
         let logUser = blog.authorId.toString()  
         if (tokenUser !== logUser) {
-            res.status(403).send({ status: false, msg: "you are not authorized" })
+           return res.status(403).send({ status: false, msg: "you are not authorized" })
         } else {
             next()
         }

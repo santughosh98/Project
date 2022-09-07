@@ -6,12 +6,13 @@ const validEmail = /.+\@.+\..+/
 const createAuthor = async (req, res) => {
     try {
         let data = req.body;
-        let { fname, lname, title } = DataView
+        let { fname, lname, title,email,password } = DataView
         let valid = validEmail.test(data.email)
-        if (!valid) { return res.status(401).send({ data: "savedData" }) }
+        if (!valid) { return res.status(401).send({ data: "Please enter valid email" }) }
         if (!fname) { return res.status(400).send({ status: false, msg: "First Name is required...!" }) }
-        if (!lname) { return res.status(400).send({ status: false, msg: "First Name is required...!" }) }
-        if (!title) { return res.status(400).send({ status: false, msg: "First Name is required...!" }) }
+        if (!lname) { return res.status(400).send({ status: false, msg: "last Name is required...!" }) }
+        if (!email) { return res.status(400).send({ status: false, msg: "email is required...!" }) }
+        if (!password) { return res.status(400).send({ status: false, msg: "password is required...!" }) }
 
         let savedData = await authorModel.create(data)
         return res.status(201).send({ data: savedData })
@@ -32,7 +33,7 @@ const login = async (req, res) => {
         } else {
             let user = await authorModel.findOne({ email: userMail, password: userPassword });
             if (!user) {
-                return res.status(401).send({ status: false, msg: "emailid or password is invalid" })
+                return res.status(401).send({ status: false, msg: "email or password is incorrect" })
             } else {
                 let token = jwt.sign(
                     {
@@ -40,7 +41,7 @@ const login = async (req, res) => {
                         team: "Group-09"
                     }, "group-09-secretkey");   //2nd input which is very very hard to guess
                 res.setHeader("x-api-key", token);
-                res.send({ status: true, token: token });
+               return res.send({ status: true, token: token });
             }
         }
     } catch (err) {
