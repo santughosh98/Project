@@ -61,7 +61,7 @@ const login = async (req, res) => {
                         team: "Group-09"
                     }, "group-09-secretkey");   //2nd input which is very very hard to guess
                 res.setHeader("x-api-key", token);
-                res.status().send({ status: true, msg: "login succesfully " });
+                res.status(200).send({ status: true, msg: "login succesfully " });
             }
         }
     } catch (err) {
