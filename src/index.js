@@ -1,11 +1,11 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const route = require('./routes/route.js');
-const { default: mongoose } = require('mongoose');
+const mongoose = require('mongoose');
 const app = express();
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(bodyParser.urlencoded({ extended: true }));
 
 
 mongoose.connect("mongodb+srv://qilzaejmqsvtjzzyit:lLDqFD4KNDzknQZO@cluster0.r6t2jbn.mongodb.net/Project-blogging09", {
