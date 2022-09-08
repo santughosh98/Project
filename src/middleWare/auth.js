@@ -4,13 +4,8 @@ const mongoose = require("mongoose");
 
 const authenticate = async (req, res, next) => {
     try {
-<<<<<<< HEAD
-        let token = req.headers["x-api-key"] 
-        if (!token) return res.status(401).send({ status: false, msg: "please enter token" })
-=======
         let token = req.headers["x-api-key"]
         if (!token) return res.status(401).send({ status: false, msg: "token is required" })
->>>>>>> db49746602a4d6044a0efd12076c0669a8302037
         jwt.verify(token, "group-09-secretkey", function (error, decoded) {
             if (error) {
                 return res.status(401).send({ msg: "Authentication failed" })

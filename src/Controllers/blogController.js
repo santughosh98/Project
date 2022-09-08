@@ -5,18 +5,6 @@ const mongoose = require('mongoose')
 //-------------------------------------create blog------------------------------------------------//
 const createBlog = async (req, res) => {
     try {
-<<<<<<< HEAD
-        let data = req.body;
-        let {title,authorId,category,body} = data
-        if(Object.keys(data).length==0) return res.status(400).send({ error: "Please give input" })
-        
-        if(!title) return res.status(400).send({ error: "Title is required" })
-        if(!body) return res.status(400).send({ error: "body is required" })
-        if(!category) return res.status(400).send({ error: "category is required" })
-        if (!authorId) {return res.status(400).send({ error: "author id required" })}
-        if(!mongoose.Types.ObjectId.isValid(authorId)) {
-        return res.status(400).send({ error: "!!Oops author id is not valid" })
-=======
         let data = req.body;      // req.body.xyz=pqw
         let { title, authorId, category, body } = data
         // ==Mandatory_fields== \\
@@ -27,7 +15,6 @@ const createBlog = async (req, res) => {
         if (!authorId) return res.status(400).send({ error: "author id required" })
         if (!mongoose.Types.ObjectId.isValid(authorId)) {
             return res.status(400).send({ error: "!!Oops author id is not valid" })
->>>>>>> db49746602a4d6044a0efd12076c0669a8302037
         }
         // ==Duplication== \\
         let authId = await authorModel.findById(authorId)
