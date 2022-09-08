@@ -1,11 +1,13 @@
 const authorModel = require("../Model/authorModel")
 const jwt = require("jsonwebtoken");
 const validEmail = /.+\@.+\..+/
+const stringvalid =/<< $& >>/
 
 
 const createAuthor = async (req, res) => {
     try {
         let data = req.body;
+<<<<<<< HEAD
         let { fname, lname, title,email,password } = DataView
         let valid = validEmail.test(data.email)
         if (!valid) { return res.status(401).send({ data: "Please enter valid email" }) }
@@ -14,6 +16,22 @@ const createAuthor = async (req, res) => {
         if (!email) { return res.status(400).send({ status: false, msg: "email is required...!" }) }
         if (!password) { return res.status(400).send({ status: false, msg: "password is required...!" }) }
 
+=======
+        let { fname, lname, title, email,password } = data
+        if (!fname) { return res.status(400).send({ status: false, msg: "First Name is required...!" }) }
+        if (!lname) { return res.status(400).send({ status: false, msg: "last Name is required...!" }) }
+        if (!title) { return res.status(400).send({ status: false, msg: "titlr is required...!" }) }
+        let validFn=stringvalid.test(fname)
+        if (!validFn) { return res.status(401).send({ data: "first name id is in invalid format" }) }
+        let validLn=stringvalid.test(lname)
+        if (!validLn) { return res.status(401).send({ data: "last name id is in invalid format" }) }
+        let validT=stringvalid.test(title)
+        if (!validT) { return res.status(401).send({ data: "title is in invalid format" }) }
+        let validE = validEmail.test(email)
+        if (!validE) { return res.status(401).send({ data: "email id is in invalid format" }) }
+        let validP=stringvalid.test(password)
+        if (!validP) { return res.status(401).send({ data: "title is in invalid format" }) }
+>>>>>>> db49746602a4d6044a0efd12076c0669a8302037
         let savedData = await authorModel.create(data)
         return res.status(201).send({ data: savedData })
 
@@ -41,7 +59,11 @@ const login = async (req, res) => {
                         team: "Group-09"
                     }, "group-09-secretkey");   //2nd input which is very very hard to guess
                 res.setHeader("x-api-key", token);
+<<<<<<< HEAD
                return res.send({ status: true, token: token });
+=======
+                res.status().send({ status: true, msg: "login succesfully " });
+>>>>>>> db49746602a4d6044a0efd12076c0669a8302037
             }
         }
     } catch (err) {
