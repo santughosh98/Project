@@ -20,15 +20,9 @@ const createBlog = async (req, res) => {
         let authId = await authorModel.findById(authorId)
         if (!authId) { return res.status(404).send({ error: "!!Oops author id doesn't exist" }) }
 
-<<<<<<< HEAD
-        if (data.isPublished === true){data.publishedAt = Date.now()}
-        let savedData = await blogModel.create(data)
-        return res.status(201).send({ data: savedData })
-=======
         if (data.isPublished === true) { data.publishedAt = Date.now() }
         let savedata = await blogModel.create(data)
         return res.status(201).send({ data: savedata })
->>>>>>> db49746602a4d6044a0efd12076c0669a8302037
     } catch (err) {
         res.status(500).send({ status: false, error: err.message })
     }
