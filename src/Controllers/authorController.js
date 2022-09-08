@@ -13,7 +13,10 @@ const createAuthor = async (req, res) => {
         //--mandatory field--//
         if (!fname) { return res.status(400).send({ status: false, msg: "First Name is required...!" }) }
         if (!lname) { return res.status(400).send({ status: false, msg: "last Name is required...!" }) }
-        if (!title) { return res.status(400).send({ status: false, msg: "titlr is required...!" }) }
+        if (!title) { return res.status(400).send({ status: false, msg: "title is required...!" }) }
+        if (!email) { return res.status(400).send({ status: false, msg: "email is required...!" }) }
+        if (!password) { return res.status(400).send({ status: false, msg: "password is required...!" }) }
+
         //---format---//
         let validFn=stringvalid.test(fname)
         if (!validFn) { return res.status(400).send({ data: "first name id is in invalid format" }) }
