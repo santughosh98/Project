@@ -1,11 +1,10 @@
 const authorModel = require("../Model/authorModel")
 const jwt = require("jsonwebtoken");
 const validEmail = /.+\@.+\..+/
-const stringvalid =/[A-Za-z]/
-const passValid=/[a-zA-Z0-9@]{6,7}$/
+const stringvalid =/^[A-Z]+[a-z]+(?:(?:|['_\. ])([a-z]*(\.\s)?[a-z])+)*$/
+const passValid=/^[a-zA-Z0-9@]{6,8}$/
 
-//^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/
-//
+
 const createAuthor = async (req, res) => {
     try {
         let data = req.body;
@@ -13,42 +12,47 @@ const createAuthor = async (req, res) => {
         //--mandatory field--//
         if (!fname) { return res.status(400).send({ status: false, msg: "First Name is required...!" }) }
         if (!lname) { return res.status(400).send({ status: false, msg: "last Name is required...!" }) }
-        if (!title) { return res.status(400).send({ status: false, msg: "titlr is required...!" }) }
+        if (!title) { return res.status(400).send({ status: false, msg: "title is required...!" }) }
+        if (!email) { return res.status(400).send({ status: false, msg: "email is required...!" }) }
+        if (!password) { return res.status(400).send({ status: false, msg: "password is required...!" }) }
+
         //---format---//
         let validFn=stringvalid.test(fname)
-        if (!validFn) { return res.status(400).send({ data: "first name id is in invalid format" }) }
+        if (!validFn) { return res.status(400).send({ status:false,msg: "first name id is in invalid format" }) }
         let validLn=stringvalid.test(lname)
-        if (!validLn) { return res.status(400).send({ data: "last name id is in invalid format" }) }
+        if (!validLn) { return res.status(400).send({ status:false,msg: "last name id is in invalid format" }) }
         if (title != "Mr" && title != "Mrs" && title !="Miss")
         return res.status(400).send({status : false,msg: "u can choose either Mr or Mrs or Miss only" })
         let validE = validEmail.test(email)
-        if (!validE) { return res.status(400).send({ data: "email id is in invalid format" }) }
+        if (!validE) { return res.status(400).send({ status:false,msg: "email id is in invalid format" }) }
         let validP=passValid.test(password)
-        if (!validP) { return res.status(400).send({ data: "password is in invalid format" }) }
+        if (!validP) { return res.status(400).send({ status:false,msg: "Your password must contain at least one alphabet one number and one special character minimum 6 character" }) }
+
         //----dublicate key---//
-        let inUse= await authorModel.find({email:email})
-        if(inUse!==0)return res.status(400).send({status:false,msg:"email already in use"})
-        //----//
+
+        let inUse= await authorModel.findOne({email:email})
+        if(inUse)return res.status(400).send({status:false,msg:"email already in use"})
+        //----creating authors-----------------------------//
         let savedData = await authorModel.create(data)
-        return res.status(201).send({ data: savedData })
+        return res.status(201).send({status:true, data: savedData })
 
     } catch (err) {
-        res.status(500).send({ error: err.message, status: false })
+        res.status(500).send({ err: err.message, status: false })
     }
 }
 
 const login = async (req, res) => {
     try {
-        let userMail = req.body.email;
-        let userPassword = req.body.password;
-        if (!userMail) {
-            return res.status(400).send({ status: false, msg: "plz enter  ur email" })
-        } else if (!userPassword) {
-            return res.status(400).send({ status: false, msg: "plz enter ur password" })
+        let data = req.body
+     let {email,password}=data
+        if (!email) {
+            return res.status(400).send({ status: false, msg: "plz enter  your email" })
+        } else if (!password) {
+            return res.status(400).send({ status: false, msg: "plz enter your password" })
         } else {
-            let user = await authorModel.findOne({ email: userMail, password: userPassword });
+            let user = await authorModel.findOne({ email: email, password: password });
             if (!user) {
-                return res.status(401).send({ status: false, msg: "email or password is incorrect" })
+                return res.status(401).send({ status: false, msg: "your email or password is incorrect" })
             } else {
                 let token = jwt.sign(
                     {
@@ -56,7 +60,7 @@ const login = async (req, res) => {
                         team: "Group-09"
                     }, "group-09-secretkey");   //2nd input which is very very hard to guess
                 res.setHeader("x-api-key", token);
-                res.status().send({ status: true, msg: "login succesfully " });
+                res.status(200).send({ status: true, msg: "login successfully " });
             }
         }
     } catch (err) {
