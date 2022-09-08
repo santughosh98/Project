@@ -94,7 +94,7 @@ const deleteBlogs2 = async (req, res) => {
     try {
         let data = req.query
         let blog = await blogModel.find({ $and: [{ isDeleted: false, isPublished: false }, data] })
-        if (blog == 0) { return res.status(404).send("no any blog matching") }
+        if (blog == 0) { return res.status(404).send("no such blog present") }
         let deleteBlogData = await blogModel.updateMany(data,
             { $set: { isDeleted: true, deletedAt: Date.now() } },
             { new: true })
