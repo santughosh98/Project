@@ -1,8 +1,8 @@
 const authorModel = require("../Model/authorModel")
 const jwt = require("jsonwebtoken");
 const validEmail = /.+\@.+\..+/
-const stringvalid =/[A-Za-z]/
-const passValid=/[a-zA-Z0-9@]{6,7}$/
+const stringvalid =/^[A-Z]+[a-zA-Z]+(?:(?:|['_\. ])([a-zA-Z]*(\.\s)?[a-zA-Z])+)*$/
+const passValid=/^[a-zA-Z0-9@]{6,8}$/
 
 const createAuthor = async (req, res) => {
     try {
@@ -29,7 +29,7 @@ const createAuthor = async (req, res) => {
 
         //----dublicate key---//
 
-        let inUse= await authorModel.find({email:email})
+        let inUse= await authorModel.findOne({email:email})
         if(inUse)return res.status(400).send({status:false,msg:"email already in use"})
         //----//
         let savedData = await authorModel.create(data)
