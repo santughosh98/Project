@@ -17,13 +17,13 @@ const createAuthor = async (req, res) => {
 
         //---format---//
         let validFn=stringvalid.test(fname)
-        if (!validFn) { return res.status(400).send({ status:false,msg: "first name id is in invalid format" }) }
+        if (!validFn) { return res.status(400).send({ status:false,msg: "first name id is in invalid format first letter should always be capital and only albhabates are allowed" }) }
         let validLn=stringvalid.test(lname)
-        if (!validLn) { return res.status(400).send({ status:false,msg: "last name id is in invalid format" }) }
+        if (!validLn) { return res.status(400).send({ status:false,msg: "last name id is in invalid format first letter should always be capital  and only albhabates are allowed" }) }
         if (title != "Mr" && title != "Mrs" && title !="Miss")
-        return res.status(400).send({status : false,msg: "u can choose either Mr or Mrs or Miss only" })
+        return res.status(400).send({status : false,msg: "you can choose either Mr or Mrs or Miss only" })
         let validE = validEmail.test(email)
-        if (!validE) { return res.status(400).send({ status:false,msg: "email id is in invalid format" }) }
+        if (!validE) { return res.status(400).send({ status:false,msg: "email id valid format =>(examplexx@xyz.xyz)" }) }
         let validP=passValid.test(password)
         if (!validP) { return res.status(400).send({ status:false,msg: "Your password must contain at least one alphabet one number and one special character minimum 6 character" }) }
 
@@ -45,9 +45,9 @@ const login = async (req, res) => {
         let data = req.body
      let {email,password}=data
         if (!email) {
-            return res.status(400).send({ status: false, msg: "plz enter  your email" })
+            return res.status(400).send({ status: false, msg: "please enter  your email" })
         } else if (!password) {
-            return res.status(400).send({ status: false, msg: "plz enter your password" })
+            return res.status(400).send({ status: false, msg: "please enter your password" })
         } else {
             let user = await authorModel.findOne({ email: email, password: password });
             if (!user) {
@@ -59,7 +59,7 @@ const login = async (req, res) => {
                         team: "Group-09"
                     }, "group-09-secretkey");   //2nd input which is very very hard to guess
                 res.setHeader("x-api-key", token);
-                res.status(200).send({ status: true, msg: "login successfully " });
+                res.status(200).send({ status: true, msg: "login successful " });
             }
         }
     } catch (err) {

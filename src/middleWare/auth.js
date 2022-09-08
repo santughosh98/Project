@@ -9,13 +9,13 @@ const authenticate = async (req, res, next) => {
         if (!token) return res.status(401).send({ status: false, msg: "token is required" })
         jwt.verify(token, "group-09-secretkey", function (error, decoded) {
             if (error) {
-                return res.status(401).send({ msg: "Authentication failed" })
+                return res.status(401).send({status: false, msg: "Authentication failed" })
             } else {
                 req.token = decoded
                 next()
             }
         })
-    } catch (error) { res.status(500).send(error.message) }
+    } catch (error) { res.status(500).send({status: false,err:error.message}) }
 }
 
 
