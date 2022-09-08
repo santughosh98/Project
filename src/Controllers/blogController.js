@@ -6,21 +6,27 @@ const mongoose = require('mongoose')
 const createBlog = async (req, res) => {
     try {
         let data = req.body;      // req.body.xyz=pqw
-        let { title, authorId, category, body } = data
+        let { title, authorId, category, body, isPublished } = data
         // ==Mandatory_fields== \\
         if (Object.keys(data).length == 0) return res.status(400).send({ error: "incomplete input" })
         if (!title) return res.status(400).send({ error: "Title is required" })
         if (!body) return res.status(400).send({ error: "body is required" })
         if (!category) return res.status(400).send({ error: "category is required" })
         if (!authorId) return res.status(400).send({ error: "author id required" })
+        //==format==\\
         if (!mongoose.Types.ObjectId.isValid(authorId)) {
             return res.status(400).send({ error: "!!Oops author id is not valid" })
         }
+        if (typeof isPublished !== "boolean") {
+            return res.status(400).send({ error: "incomplete" })
+        }
+
         // ==Duplication== \\
         let authId = await authorModel.findById(authorId)
         if (!authId) { return res.status(404).send({ error: "!!Oops author id doesn't exist" }) }
 
         if (data.isPublished === true) { data.publishedAt = Date.now() }
+
         let savedata = await blogModel.create(data)
         return res.status(201).send({ data: savedata })
     } catch (err) {
@@ -88,7 +94,7 @@ const deleteBlogs2 = async (req, res) => {
     try {
         let data = req.query
         let blog = await blogModel.find({ $and: [{ isDeleted: false, isPublished: false }, data] })
-        if (blog == 0) { return res.status(404).send("no any blog matching") }
+        if (blog == 0) { return res.status(404).send("no such blog present") }
         let deleteBlogData = await blogModel.updateMany(data,
             { $set: { isDeleted: true, deletedAt: Date.now() } },
             { new: true })
