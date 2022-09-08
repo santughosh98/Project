@@ -54,6 +54,8 @@ const updateBlog = async function (req, res) {
     try {
         let data = req.params.blogId
         let update = req.body
+        if (!mongoose.Types.ObjectId.isValid(data)) 
+        { return res.status(400).send({ status:false,msg: "!!hain Oops author id is not valid" })}
         let alert = await blogModel.findOne({ _id: data, isDeleted: true })
         if (alert) return res.status(404).send({ msg: "no blog found" })
         let blogs = await blogModel.findOneAndUpdate({ _id: data },
@@ -73,6 +75,8 @@ const updateBlog = async function (req, res) {
 const deleteBlogs = async (req, res) => {
     try {
         let BlogId = req.params.blogId
+        if (!mongoose.Types.ObjectId.isValid(BlogId)) 
+        { return res.status(400).send({ status:false,msg: "!!hain Oops author id is not valid" })}
         let findData = await blogModel.find({ _id: BlogId, isDeleted: false })
         if (findData.length == 0) {
             return res.status(404).send({ status: false, msg: "no blog found" })
