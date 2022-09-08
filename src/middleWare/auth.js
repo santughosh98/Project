@@ -22,7 +22,7 @@ const authenticate = async (req, res, next) => {
 const authorize = async (req, res, next) => {
     try {
         let blogId = req.params.blogId
-         let a=req.query
+         let a=req.query       
         const blog = await blogModel.findOne({$or:[{_id:blogId},{authorId:a.authorId},{tags:a.tags},{category:a.category},{subcategory:a.subcategory}]})
         if (!blog) { return res.status(404).send({ status: false, msg: "blog not found" }) }
         let tokenUser = req.token.userId

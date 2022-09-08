@@ -4,7 +4,6 @@ const validEmail = /.+\@.+\..+/
 const stringvalid =/^[A-Z]+[a-z]+(?:(?:|['_\. ])([a-z]*(\.\s)?[a-z])+)*$/
 const passValid=/^[a-zA-Z0-9@]{6,8}$/
 
-
 const createAuthor = async (req, res) => {
     try {
         let data = req.body;
