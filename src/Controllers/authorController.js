@@ -4,8 +4,6 @@ const validEmail = /.+\@.+\..+/
 const stringvalid =/[A-Za-z]/
 const passValid=/[a-zA-Z0-9@]{6,7}$/
 
-//^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/
-//
 const createAuthor = async (req, res) => {
     try {
         let data = req.body;
@@ -44,14 +42,14 @@ const createAuthor = async (req, res) => {
 
 const login = async (req, res) => {
     try {
-        let userMail = req.body.email;
-        let userPassword = req.body.password;
-        if (!userMail) {
+        let data = req.body
+     let {email,password}=data
+        if (!email) {
             return res.status(400).send({ status: false, msg: "plz enter  ur email" })
-        } else if (!userPassword) {
+        } else if (!password) {
             return res.status(400).send({ status: false, msg: "plz enter ur password" })
         } else {
-            let user = await authorModel.findOne({ email: userMail, password: userPassword });
+            let user = await authorModel.findOne({ email: email, password: password });
             if (!user) {
                 return res.status(401).send({ status: false, msg: "emailid or password is invalid" })
             } else {

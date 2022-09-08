@@ -8,29 +8,29 @@ const createBlog = async (req, res) => {
         let data = req.body;      // req.body.xyz=pqw
         let { title, authorId, category, body, isPublished } = data
         // ==Mandatory_fields== \\
-        if (Object.keys(data).length == 0) return res.status(400).send({ error: "incomplete input" })
-        if (!title) return res.status(400).send({ error: "Title is required" })
-        if (!body) return res.status(400).send({ error: "body is required" })
-        if (!category) return res.status(400).send({ error: "category is required" })
-        if (!authorId) return res.status(400).send({ error: "author id required" })
+        if (Object.keys(data).length == 0) return res.status(400).send({ status:false,msg: "incomplete input" })
+        if (!title) return res.status(400).send({ status:false,msg: "Title is required" })
+        if (!body) return res.status(400).send({ status:false,msg: "body is required" })
+        if (!category) return res.status(400).send({ status:false,msg: "category is required" })
+        if (!authorId) return res.status(400).send({ status:false,msg: "author id required" })
         //==format==\\
         if (!mongoose.Types.ObjectId.isValid(authorId)) {
-            return res.status(400).send({ error: "!!Oops author id is not valid" })
+            return res.status(400).send({ status:false,msg: "!!Oops author id is not valid" })
         }
         if (typeof isPublished !== "boolean") {
-            return res.status(400).send({ error: "incomplete" })
+            return res.status(400).send({ status:false,msg:"input is needed"})
         }
 
         // ==Duplication== \\
         let authId = await authorModel.findById(authorId)
-        if (!authId) { return res.status(404).send({ error: "!!Oops author id doesn't exist" }) }
+        if (!authId) { return res.status(404).send({ msg: "!!Oops author id doesn't exist" }) }
 
         if (data.isPublished === true) { data.publishedAt = Date.now() }
 
         let savedata = await blogModel.create(data)
         return res.status(201).send({ data: savedata })
     } catch (err) {
-        res.status(500).send({ status: false, error: err.message })
+        res.status(500).send({ status: false, status:false,msg: err.message })
     }
 }
 
@@ -40,11 +40,11 @@ const getBlogs = async (req, res) => {
         let combination = req.query
         let dataBlog = await blogModel.find({ $and: [{ isDeleted: false, isPublished: true }, combination] })
         if (dataBlog == 0) {
-            return res.status(404).send({ error: " DATA NOT FOUND " })
+            return res.status(404).send({ status:false,msg: " DATA NOT FOUND " })
         } else
             return res.status(200).send({ data: dataBlog })
     } catch (err) {
-        res.status(500).send({ status: false, error: err.message })
+        res.status(500).send({ status: false, status:false,msg: err.message })
     }
 }
 
@@ -65,7 +65,7 @@ const updateBlog = async function (req, res) {
                 $push: { tags: update.tags, subcategory: update.subcategory }
             }, { new: true }) // , upsert: true 
         return res.status(200).send({ status: true, msg: blogs })
-    } catch (err) { res.status(500).sent({ error: err.message }) }
+    } catch (err) { res.status(500).sent({ status:false,msg: err.message }) }
 }
 
 //<<<<<<<<<<<<deletion1>...................
