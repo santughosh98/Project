@@ -27,10 +27,12 @@ const createAuthor = async (req, res) => {
         let validE = validEmail.test(email)
         if (!validE) { return res.status(400).send({ data: "email id is in invalid format" }) }
         let validP=passValid.test(password)
-        if (!validP) { return res.status(400).send({ data: "password is in invalid format" }) }
+        if (!validP) { return res.status(400).send({ data: "password is in invalid format atleast 6 more than6 character required" }) }
+
         //----dublicate key---//
+
         let inUse= await authorModel.find({email:email})
-        if(inUse!==0)return res.status(400).send({status:false,msg:"email already in use"})
+        if(inUse)return res.status(400).send({status:false,msg:"email already in use"})
         //----//
         let savedData = await authorModel.create(data)
         return res.status(201).send({ data: savedData })
