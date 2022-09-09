@@ -25,7 +25,7 @@ const authorize = async (req, res, next) => {
          let a=req.query       
         const blog = await blogModel.findOne({$or:[{_id:blogId},{authorId:a.authorId},{tags:a.tags},{category:a.category},{subcategory:a.subcategory}]})
         if (!blog) { return res.status(404).send({ status: false, msg: "blog not found" }) }
-        let tokenUser = req.token.userId
+        let tokenUser = req.token.authorId
         let logUser = blog.authorId.toString()
         if (tokenUser !==( logUser||blog.authorId) ){
             res.status(403).send({ status: false, msg: "you are not authorized" })
@@ -36,24 +36,7 @@ const authorize = async (req, res, next) => {
 
 }
 
-const idCheck = async (req,res,next)=>{
-    try{
-    if (!mongoose.Types.ObjectId.isValid(req.params.blogId)) 
-           { return res.status(400).send({ status:false,msg: "!!Oops blog id is not valid" })}
-           else{
-            next()
-           }
-        } catch (err) { res.status(500).send({ status: false, error: err.message }) }
-}
 
-const idAuth = async (req,res,next)=>{
-    try{
-    if (!mongoose.Types.ObjectId.isValid(req.query.authorId ||req.body.authorId)) 
-           { return res.status(400).send({ status:false,msg: "!!Oops authorId  is not valid" })}
-           else{
-            next()
-           }
-        } catch (err) { res.status(500).send({ status: false, error: err.message }) }
-}
 
-module.exports = { authenticate, authorize , idCheck,idAuth}
+
+module.exports = { authenticate, authorize }

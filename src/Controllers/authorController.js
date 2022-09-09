@@ -1,8 +1,9 @@
 const authorModel = require("../Model/authorModel")
 const jwt = require("jsonwebtoken");
 const validEmail = /.+\@.+\..+/
-const stringvalid =/^[A-Z]+[a-z]+(?:(?:|['_\. ])([a-z]*(\.\s)?[a-z])+)*$/
-const passValid=/^[a-zA-Z0-9@]{6,8}$/
+const stringvalid =/^[A-Z]+[a-z]+(?:(?:|['_\. ])([a-z]*(\.\s)?[a-z])+  )*$/
+// /^[A-Z]+[a-z]+(?:(?:|['_\. ])([a-z]*(\.\s)?[a-z])+)*$/
+const passValid=/^[a-zA-Z0-9@]{6,10}$/
 
 const createAuthor = async (req, res) => {
     try {
@@ -17,9 +18,9 @@ const createAuthor = async (req, res) => {
 
         //---format---//
         let validFn=stringvalid.test(fname)
-        if (!validFn) { return res.status(400).send({ status:false,msg: "first name id is in invalid format first letter should always be capital and only albhabates are allowed" }) }
+        if (!validFn) { return res.status(400).send({ status:false,msg: "first name  is in invalid format first letter should always be capital and only albhabates are allowed" }) }
         let validLn=stringvalid.test(lname)
-        if (!validLn) { return res.status(400).send({ status:false,msg: "last name id is in invalid format first letter should always be capital  and only albhabates are allowed" }) }
+        if (!validLn) { return res.status(400).send({ status:false,msg: "last name  is in invalid format first letter should always be capital  and only albhabates are allowed" }) }
         if (title != "Mr" && title != "Mrs" && title !="Miss")
         return res.status(400).send({status : false,msg: "you can choose either Mr or Mrs or Miss only" })
         let validE = validEmail.test(email)
@@ -55,11 +56,11 @@ const login = async (req, res) => {
             } else {
                 let token = jwt.sign(
                     {
-                        userId: user._id.toString(),   //<1st input>
+                        authorId: user._id.toString(),   //<1st input>
                         team: "Group-09"
                     }, "group-09-secretkey");   //2nd input which is very very hard to guess
-                res.setHeader("x-api-key", token);
-                res.status(200).send({ status: true, msg: "login successful " });
+                //  res.setHeader("x-api-key", token);
+                res.status(200).send({ status: true, msg: "login successful ",token });
             }
         }
     } catch (err) {
