@@ -66,7 +66,8 @@ const authIdValid = (req, res, next) => {
   }
 } catch (err) {
     return res.status(500).send({ status: false, error: err.message });
-};
+}};
+
 const blogIdValid=(req,res,next)=>{
   try{
     if (!mongoose.Types.ObjectId.isValid(req.params.blogId)) 
@@ -74,5 +75,6 @@ const blogIdValid=(req,res,next)=>{
     else{next()}
 } catch (err) {
     return res.status(500).send({ status: false, error: err.message });
+}
 }
 module.exports = { authenticate, authorize, authIdValid,blogIdValid }
