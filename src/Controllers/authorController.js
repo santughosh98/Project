@@ -18,9 +18,9 @@ const createAuthor = async (req, res) => {
 
         //---format---//
         let validFn=stringvalid.test(fname)
-        if (!validFn) { return res.status(400).send({ status:false,msg: "first name  is in invalid format first letter should always be capital and only albhabates are allowed" }) }
+        if (!validFn) { return res.status(400).send({ status:false,msg: "first name is in invalid format first letter should always be capital and only albhabates are allowed" }) }
         let validLn=stringvalid.test(lname)
-        if (!validLn) { return res.status(400).send({ status:false,msg: "last name  is in invalid format first letter should always be capital  and only albhabates are allowed" }) }
+        if (!validLn) { return res.status(400).send({ status:false,msg: "last name is in invalid format first letter should always be capital  and only albhabates are allowed" }) }
         if (title != "Mr" && title != "Mrs" && title !="Miss")
         return res.status(400).send({status : false,msg: "you can choose either Mr or Mrs or Miss only" })
         let validE = validEmail.test(email)
