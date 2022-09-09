@@ -54,6 +54,7 @@ const authorize = async (req, res, next) => {
 };
 
 const authIdValid = (req, res, next) => {
+    try{
   if (req.query.authorId||req.body.authorId) {
     if (!mongoose.Types.ObjectId.isValid(req.query.authorId||req.body.authorId)) {
       return res
@@ -63,12 +64,15 @@ const authIdValid = (req, res, next) => {
       next();
     }
   }
+} catch (err) {
+    return res.status(500).send({ status: false, error: err.message });
 };
 const blogIdValid=(req,res,next)=>{
-  
+  try{
     if (!mongoose.Types.ObjectId.isValid(req.params.blogId)) 
     { return res.status(400).send({ status:false,msg: "! Oops blog pk id is not valid" })}
     else{next()}
-
+} catch (err) {
+    return res.status(500).send({ status: false, error: err.message });
 }
 module.exports = { authenticate, authorize, authIdValid,blogIdValid }
