@@ -1,7 +1,9 @@
 const authorModel = require("../Model/authorModel")
 const jwt = require("jsonwebtoken");
 const validEmail = /.+\@.+\..+/
-const stringvalid =/^[A-Z]+[a-z]+(?:(?:|['_\. ])([a-z]*(\.\s)?[a-z])+  )*$/
+const stringvalid =/[A-Z]{1}[a-z]{2}[a-z]*/
+
+// /^[A-Z]+[a-z]+(?:(?:|['_\. ])([a-z]*(\.\s)?[a-z])+  )*$/
 // /^[A-Z]+[a-z]+(?:(?:|['_\. ])([a-z]*(\.\s)?[a-z])+)*$/
 const passValid=/^[a-zA-Z0-9@]{6,10}$/
 

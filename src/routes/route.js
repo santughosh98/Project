@@ -7,12 +7,12 @@ const mw=require("../middleWare/auth")
 router.post("/authors", AuthorController.createAuthor)
 router.post("/login", AuthorController.login)
 
-router.post("/blogs",mw.authenticate, BlogController.createBlog)
-router.get("/blogs",mw.authenticate, BlogController.getBlogs)
+router.post("/blogs",mw.authenticate,mw.authIdValid, BlogController.createBlog)
+router.get("/blogs",mw.authenticate,mw.authIdValid, BlogController.getBlogs)
 
-router.put("/blogs/:blogId",mw.authenticate,mw.authorize, BlogController.updateBlog)
-router.delete("/blogs/:blogId",mw.authenticate,mw.authorize, BlogController.deleteBlogs)
-router.delete("/blogs",mw.authenticate, mw.authorize, BlogController.deleteBlogs2)
+router.put("/blogs/:blogId",mw.blogIdValid,mw.authenticate,mw.authorize, BlogController.updateBlog)
+router.delete("/blogs/:blogId",mw.blogIdValid,mw.authenticate,mw.authorize, BlogController.deleteBlogs)
+router.delete("/blogs",mw.authenticate,mw.authIdValid, mw.authorize, BlogController.deleteBlogs2)
 
 
 

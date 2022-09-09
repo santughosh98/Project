@@ -13,9 +13,7 @@ const createBlog = async (req, res) => {
         if (!category) return res.status(400).send({ status:false,msg: "category is required" })
         if (!authorId) return res.status(400).send({ status:false,msg: "author id required" })
         //==format==\\
-        if (!mongoose.Types.ObjectId.isValid(authorId)) {
-            return res.status(400).send({ status:false,msg: "!!Oops author id is not valid" })
-        }
+        
         if (typeof isPublished !== "boolean") {
             return res.status(400).send({ status:false,msg:"is Published input is needed"})
         }
@@ -56,8 +54,7 @@ const updateBlog = async function (req, res) {
     try {
         let data = req.params.blogId
         let update = req.body
-        if (!mongoose.Types.ObjectId.isValid(data)) 
-        { return res.status(400).send({ status:false,msg: "! Oops author id is not valid" })}
+   
         let alert = await blogModel.findOne({ _id: data, isDeleted: true })
         if (alert) return res.status(404).send({status:false, msg: "no blog found" })
         let blogs = await blogModel.findOneAndUpdate({ _id: data },
