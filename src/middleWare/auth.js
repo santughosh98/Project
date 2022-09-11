@@ -9,9 +9,7 @@ const authenticate = (req, res, next) => {
             return res.status(401).send({ status: false, msg: "token is required" });
         jwt.verify(token, "group-09-secretkey", function (error, decoded) {
             if (error) {
-                return res
-                    .status(401)
-                    .send({ status: false, msg: "Authentication failed" });
+                return res.status(401).send({ status: false, msg: "Authentication failed" });
             } else {
                 req.token = decoded;
                 next();

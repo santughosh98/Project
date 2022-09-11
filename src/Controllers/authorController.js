@@ -1,14 +1,10 @@
 const authorModel = require("../Model/authorModel")
 const jwt = require("jsonwebtoken");
 const validEmail = /[a-zA-Z0-9_\-\.]+[@][a-z]+[\.][a-z]{2,3}/
-const stringvalid =/[A-Z]{1}[a-z]{2}[a-z]\D*/
+const stringvalid =/[^(A-Z)]+[a-z]+(?:(?:|['_\. ])([a-z]*(\.\D)?[a-z])+)*$/
 const passValid=/^[a-zA-Z0-9@]{6,10}$/
-
-
 // /^[A-Z]+[a-z]+(?:(?:|['_\. ])([a-z]*(\.\s)?[a-z])+  )*$/
-// /^[A-Z]+[a-z]+(?:(?:|['_\. ])([a-z]*(\.\s)?[a-z])+)*$/
-
-
+//[A-Z]{1}[a-z]{2}[a-z]\D*/
 const createAuthor = async (req, res) => {
     try {
         let data = req.body;
@@ -63,7 +59,7 @@ const login = async (req, res) => {
                         authorId: user._id.toString(),   //<1st input>
                         team: "Group-09"
                     }, "group-09-secretkey");   //2nd input which is very very hard to guess
-                //  res.setHeader("x-api-key", token);
+                 res.setHeader("x-api-key", token);
                 res.status(200).send({ status: true, msg: "login successful ",token });
             }
         }
