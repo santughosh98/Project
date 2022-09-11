@@ -80,9 +80,8 @@ const deleteBlogs = async (req, res) => {
         if (findData.length == 0) {
             return res.status(404).send({ status: false, msg: "no blog found" })
         } else {
-            let findData2 = await blogModel.findOneAndUpdate({ _id: BlogId },
-                { $set: { isDeleted: true, deletedAt: Date.now() } },
-                { new: true })
+             await blogModel.findOneAndUpdate({ _id: BlogId },
+                { $set: { isDeleted: true, deletedAt: Date.now() } })
             return res.status(200).send({ status: true, msg: "data deleted succesfully" })
         }
     } catch (err) {
@@ -99,9 +98,8 @@ const deleteBlogs2 = async (req, res) => {
         if(!data)return res.send("Please give some input")
         let blog = await blogModel.find({ $and: [{ isDeleted: false, isPublished: false }, data] })
         if (blog == 0) { return res.status(404).send({ status: false,msg:"no such blog present "}) }
-        let deleteBlogData = await blogModel.updateMany(data,
-            { $set: { isDeleted: true, deletedAt: Date.now() } },
-            { new: true })
+         await blogModel.updateMany(data,
+            { $set: { isDeleted: true, deletedAt: Date.now() } })
         return res.status(200).send({ status: true, Deleted: "deletion of blog is completed" })
     } catch (err) { res.status(500).send(err.message) }
 }

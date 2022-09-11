@@ -27,7 +27,7 @@ const authorize = async (req, res, next) => {
         let blogId = req.params.blogId;
         let a = req.query;
 
-        const blog = await blogModel.findOne({
+        const blog = await blogModel.find({
             $or: [
                 { _id: blogId },
                 { authorId: a.authorId },
@@ -36,18 +36,17 @@ const authorize = async (req, res, next) => {
                 { subcategory: a.subcategory },
             ],
         });
+
         if (!blog) {
             return res.status(404).send({ status: false, msg: "blog not found" });
         }
         let tokenUser = req.token.authorId;
-        let logUser = blog.authorId.toString();
-        if (tokenUser !== (logUser || blog.authorId)) {
-            return res
-                .status(403)
-                .send({ status: false, msg: "you are not authorized" });
-        } else {
-            next();
-        }
+        for(let i in blog){
+            if(blog[i].authorId==tokenUser){
+            next()
+            }else{
+                return res.status(403).send({ status: false, msg: "you are not authorized" });
+            }}
     } catch (err) {
         return res.status(500).send({ status: false, error: err.message });
     }
@@ -55,16 +54,18 @@ const authorize = async (req, res, next) => {
 
 const authIdValid = (req, res, next) => {
     try {
+        
         if (req.query.authorId || req.body.authorId) {
             if (!mongoose.Types.ObjectId.isValid(req.query.authorId || req.body.authorId)) {
                 return res
                     .status(400)
                     .send({ status: false, msg: "!!Oops author id is not valid" });
-            } else {
-                next();
+            } 
+            }else{
+                next()
             }
         }
-    } catch (err) {
+     catch (err) {
         return res.status(500).send({ status: false, error: err.message });
     }
 };
