@@ -25,9 +25,9 @@ const authorize = async (req, res, next) => {
         let blogId = req.params.blogId;
         let a = req.query;
         
-        // if(Object.keys(a).length==0){
-        //     { return res.status(400).send({ message: "No query params received. Aborting delete operation",
-        //  })}}
+        if(Object.keys(a).length==0){
+            { return res.status(400).send({ message: "No query params received. Aborting delete operation",
+         })}}
         
         const blog = await blogModel.find({
             $or: [
@@ -45,7 +45,7 @@ const authorize = async (req, res, next) => {
         let tokenUser = req.token.authorId;
         if(a.authorId){
         let logUser= a.authorId
-        if(tokenUser !== logUser){
+        if(tokenUser !== (logUser||blog.authorId)){
 
             return res.status(403).send({ status: false, msg: "you are not authorized 1" });
         }else{
@@ -83,7 +83,7 @@ const authIdValid = (req, res, next) => {
 const blogIdValid = (req, res, next) => {
     try {
         if (!mongoose.Types.ObjectId.isValid(req.params.blogId)) 
-        { return res.status(400).send({ status: false, msg: "! Oops blog pk id is not valid" }) }
+        { return res.status(400).send({ status: false, msg: "! Oops blog id is not valid" }) }
         else { next() }
     } catch (err) {
         return res.status(500).send({ status: false, error: err.message });
