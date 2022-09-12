@@ -12,14 +12,17 @@ router.get("/blogs",mw.authenticate,mw.authIdValid, BlogController.getBlogs)
 
 router.put("/blogs/:blogId",mw.blogIdValid,mw.authenticate,mw.authorize, BlogController.updateBlog)
 router.delete("/blogs/:blogId",mw.blogIdValid,mw.authenticate,mw.authorize, BlogController.deleteBlogs)
-router.delete("/blogs",mw.authenticate,mw.authIdValid, mw.authorize, BlogController.deleteBlogs2)
+router.delete("/blogs",mw.authenticate, mw.authorize, BlogController.deleteBlogs2)
+
 
 
 router.all("/**", function (req, res) {
+    try{
     res.status(404).send({
         status: false,
         msg: "The api you request is not available"
     })
+}catch(err){res.send(err.message)}
 })
 
 

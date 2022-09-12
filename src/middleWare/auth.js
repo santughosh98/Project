@@ -34,21 +34,31 @@ const authorize = async (req, res, next) => {
                 { subcategory: a.subcategory },
             ],
         });
-
         if (!blog) {
             return res.status(404).send({ status: false, msg: "blog not found" });
         }
         let tokenUser = req.token.authorId;
-        for(let i in blog){
-            if(blog[i].authorId==tokenUser){
+        let logUser= a.authorId
+        if(tokenUser !== logUser){
+
+            return res.status(403).send({ status: false, msg: "you are not authorized" });
+        }else{
             next()
-            }else{
-                return res.status(403).send({ status: false, msg: "you are not authorized" });
-            }}
+        }
+
+
+        
+        // for(let i in blog){
+        //     if(blog[i].authorId==tokenUser){
+        //     next()
+        //     }else{
+        //         return res.status(403).send({ status: false, msg: "you are not authorized" });
+        //     }}
     } catch (err) {
         return res.status(500).send({ status: false, error: err.message });
     }
 };
+
 
 const authIdValid = (req, res, next) => {
     try {
@@ -58,11 +68,11 @@ const authIdValid = (req, res, next) => {
                 return res
                     .status(400)
                     .send({ status: false, msg: "!!Oops author id is not valid" });
-            } 
+            
             }else{
                 next()
             }
-        }
+        }        }
      catch (err) {
         return res.status(500).send({ status: false, error: err.message });
     }
