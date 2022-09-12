@@ -28,7 +28,6 @@ const authorize = async (req, res, next) => {
         const blog = await blogModel.find({
             $or: [
                 { _id: blogId },
-                { authorId: a.authorId },
                 { tags: a.tags },
                 { category: a.category },
                 { subcategory: a.subcategory },
@@ -45,15 +44,12 @@ const authorize = async (req, res, next) => {
         }else{
             next()
         }
-
-
-        
-        // for(let i in blog){
-        //     if(blog[i].authorId==tokenUser){
-        //     next()
-        //     }else{
-        //         return res.status(403).send({ status: false, msg: "you are not authorized" });
-        //     }}
+        for(let i in blog){
+            if(blog[i].authorId==tokenUser){
+            next()
+            }else{
+                return res.status(403).send({ status: false, msg: "you are not authorized" });
+            }}
     } catch (err) {
         return res.status(500).send({ status: false, error: err.message });
     }
