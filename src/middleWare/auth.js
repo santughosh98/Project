@@ -24,7 +24,11 @@ const authorize = async (req, res, next) => {
     try {
         let blogId = req.params.blogId;
         let a = req.query;
-
+        
+        // if(Object.keys(a).length==0){
+        //     { return res.status(400).send({ message: "No query params received. Aborting delete operation",
+        //  })}}
+        
         const blog = await blogModel.find({
             $or: [
                 { _id: blogId },
@@ -35,8 +39,9 @@ const authorize = async (req, res, next) => {
         });
         console.log(blog)
         if (!blog) {
-            return res.status(404).send({ status: false, msg: "blog not found" });
+            return res.status(404).send({ status: false, msg: "blog not found ok" });
         }
+        
         let tokenUser = req.token.authorId;
         if(a.authorId){
         let logUser= a.authorId
@@ -50,7 +55,7 @@ const authorize = async (req, res, next) => {
             if(blog[i].authorId==tokenUser){
             next()
             }else{
-                return res.status(403).send({ status: false, msg: "you are not authorized 2" });
+                return res.status(403).send({ status: false, msg: "you are not authorized " });
             }}}
     } catch (err) {
         return res.status(500).send({ status: false, error: err.message });
@@ -59,17 +64,17 @@ const authorize = async (req, res, next) => {
 
 const authIdValid = (req, res, next) => {
     try {
-        
+
+       // let x=req["x-api-key"]
         if (req.query.authorId || req.body.authorId) {
             if (!mongoose.Types.ObjectId.isValid(req.query.authorId || req.body.authorId)) {
                 return res
                     .status(400)
                     .send({ status: false, msg: "!!Oops author id is not valid" });
-            
-            }else{
-                next()
-            }
-        }        }
+            }else{next()}
+        }else if(!req.query.authorId || !req.body.authorId) {
+            next()
+        }      }
      catch (err) {
         return res.status(500).send({ status: false, error: err.message });
     }

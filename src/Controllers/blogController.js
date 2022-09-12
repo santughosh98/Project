@@ -6,6 +6,7 @@ const mongoose = require('mongoose')
 const createBlog = async (req, res) => {
      try {
        let data = req.body;
+       
          let { title, authorId, category, body, isPublished } = data
         // ==Mandatory_fields== //
         if (!title) return res.status(400).send({ status:false,msg: "Title is required" })
@@ -19,9 +20,14 @@ const createBlog = async (req, res) => {
         }
 
         // ==Duplication== \\
+        
         let authId = await authorModel.findById(authorId)
         if (!authId) { return res.status(404).send({status:false, msg: "!!Oops author id doesn't exist" }) }
-    
+        let tokenUser =req.token.authorId
+        if(req.body.authorId!==tokenUser){
+            return res
+                .status(400)
+                .send({ status: false, msg: "you are not authorised" });}
         let blogcheck = await blogModel.findOne({title:data.title,isDeleted:false})
         if(blogcheck)return res.status(400).send({status:false,msg:"this blog is already present"})
 
@@ -38,7 +44,7 @@ const createBlog = async (req, res) => {
 const getBlogs = async (req, res) => {
     try {
         let combination = req.query
-        let dataBlog = await blogModel.find({ $and: [{ isDeleted: false, isPublished: true }, combination] })
+        let dataBlog = await blogModel.find({ $and: [{ isDeleted: false, isPublished: true }, combination] }).count()
         if (dataBlog == 0) {
             return res.status(404).send({ status:false,msg: " No Such Blog found " })
         } else
@@ -93,13 +99,22 @@ const deleteBlogs = async (req, res) => {
 const deleteBlogs2 = async (req, res) => {
     try {
         let data = req.query
-        if(!data)return res.send("Please give some input")
-        let blog = await blogModel.find({ $and: [{ isDeleted: false, isPublished: false }, data] })
-        if (blog == 0) { return res.status(404).send({ status: false,msg:"no such blog present "}) }
+       
+        
+        // if (!validator.isValidRequestBody(queryParams)) {
+        //     return res.status(400).send({
+        //       status: false,
+        //       message: "No query params received. Aborting delete operation",
+        //     });
+        //   }
+        let blog = await blogModel.find({ isDeleted: false, isPublished: false })
+        if (blog == 0) { return res.status(404).send({ status: false,msg:"no such blog present ok"}) }
         await blogModel.updateMany(data,
             { $set: { isDeleted: true, deletedAt: Date.now() } })
         return res.status(200).send({ status: true, Deleted: "deletion of blog is completed" })
-    } 
+       
+       }
+        
     catch (err) 
       { return res.status(500).send({ status: false, error: err.message })};
 

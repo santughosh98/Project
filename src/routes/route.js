@@ -15,7 +15,6 @@ router.delete("/blogs/:blogId",mw.blogIdValid,mw.authenticate,mw.authorize, Blog
 router.delete("/blogs",mw.authenticate, mw.authorize, BlogController.deleteBlogs2)
 
 
-
 router.all("/**", function (req, res) {
     try{
     res.status(404).send({
