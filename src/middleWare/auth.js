@@ -57,7 +57,6 @@ const authorize = async (req, res, next) => {
     }
 };
 
-
 const authIdValid = (req, res, next) => {
     try {
         
