@@ -33,23 +33,25 @@ const authorize = async (req, res, next) => {
                 { subcategory: a.subcategory },
             ],
         });
+        console.log(blog)
         if (!blog) {
             return res.status(404).send({ status: false, msg: "blog not found" });
         }
         let tokenUser = req.token.authorId;
+        if(a.authorId){
         let logUser= a.authorId
         if(tokenUser !== logUser){
 
-            return res.status(403).send({ status: false, msg: "you are not authorized" });
+            return res.status(403).send({ status: false, msg: "you are not authorized 1" });
         }else{
             next()
-        }
+        }}else{
         for(let i in blog){
             if(blog[i].authorId==tokenUser){
             next()
             }else{
-                return res.status(403).send({ status: false, msg: "you are not authorized" });
-            }}
+                return res.status(403).send({ status: false, msg: "you are not authorized 2" });
+            }}}
     } catch (err) {
         return res.status(500).send({ status: false, error: err.message });
     }
