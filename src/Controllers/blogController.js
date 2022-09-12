@@ -74,8 +74,6 @@ const updateBlog = async function (req, res) {
 const deleteBlogs = async (req, res) => {
     try {
         let BlogId = req.params.blogId
-        if (!mongoose.Types.ObjectId.isValid(BlogId)) 
-        { return res.status(400).send({ status:false,msg: "! Oops author id is not valid" })}
         let findData = await blogModel.find({ _id: BlogId, isDeleted: false })
         if (findData.length == 0) {
             return res.status(404).send({ status: false, msg: "no blog found" })
