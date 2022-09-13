@@ -51,6 +51,10 @@ const createBlog = async (req, res) => {
 const getBlogs = async (req, res) => {
     try {
         let combination = req.query
+        let {authorId,category,tags,subcategory}=combination
+        // if(category){
+        //     category.trim()
+        // }
         let dataBlog = await blogModel.find({ $and: [{ isDeleted: false, isPublished: true }, combination] })
         if (dataBlog == 0) {
             return res.status(404).send({ status: false, msg: " No Such Blog found " })
@@ -123,12 +127,12 @@ const deleteBlogs = async (req, res) => {
 const deleteBlogs2 = async (req, res) => {
     try {
         let data = req.query;
-        if (Object.keys(data).length == 0) { return res.status(400).send({ status: false, msg: "incomplete request data/please provide more data" }) }
+        if (Object.keys(data).length == 0) { return res.status(400).send({ status: false, msg: "No parameters passed!!Blog Unmodified" }) }
         let blog = await blogModel.findOne({ $and: [{ isDeleted: false, isPublished: false }, data] })
         if (!blog) { return res.status(404).send({ status: false, msg: "no such blog present ok" }) }
         let authid = blog.authorId.toString()
         let tokenUser = req.token.authorId;
-        if (authid !== tokenUser) { return res.status(403).send({ status: false, msg: "you are authorised" }) }
+        if (authid !== tokenUser) { return res.status(403).send({ status: false, msg: "unauthorised!!user info doesn't match" }) }
         await blogModel.updateMany(data, { isDeleted: true, deletedAt: Date.now() })
         return res.status(200).send({ status: true, Deleted: "deletion of blog is completed" })
     }

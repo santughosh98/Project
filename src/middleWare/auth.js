@@ -30,7 +30,7 @@ const authorize = async (req, res, next) => {
         let tokenUser = req.token.authorId;
         let logUser= blog.authorId.toString()
         if(tokenUser !== logUser){
-            return res.status(403).send({ status: false, msg: "you are not authorized 1" });
+            return res.status(403).send({ status: false, msg: "unauthorised!!user info doesn't match" });
         }else{
             next()
         }
