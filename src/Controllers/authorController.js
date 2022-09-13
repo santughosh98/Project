@@ -3,11 +3,13 @@ const jwt = require("jsonwebtoken");
 const validEmail = /[a-zA-Z0-9_\-\.]+[@][a-z]+[\.][a-z]{2,3}/
 const stringvalid =/[^(A-Z)]+[a-z]+(?:(?:|['_\. ])([a-z]*(\.\D)?[a-z])+)*$/
 const passValid=/^[a-zA-Z0-9@]{6,10}$/
-// /^[A-Z]+[a-z]+(?:(?:|['_\. ])([a-z]*(\.\s)?[a-z])+  )*$/
-//[A-Z]{1}[a-z]{2}[a-z]\D*/
+
+
 const createAuthor = async (req, res) => {
     try {
         let data = req.body;
+        if (Object.keys(data).length == 0) { return res.status(400).send({ status: false, msg: "incomplete request data/please provide more data" }) }
+
         let { fname, lname, title, email,password } = data
         //--mandatory field--//
         if (!fname) { return res.status(400).send({ status: false, msg: "First Name is required...!" }) }
@@ -44,6 +46,8 @@ const createAuthor = async (req, res) => {
 const login = async (req, res) => {
     try {
         let data = req.body
+        if (Object.keys(data).length == 0) { return res.status(400).send({ status: false, msg: "incomplete request data/please provide more data" }) }
+
      let {email,password}=data
         if (!email) {
             return res.status(400).send({ status: false, msg: "please enter  your email" })

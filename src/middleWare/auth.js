@@ -41,8 +41,6 @@ const authorize = async (req, res, next) => {
 
 const authIdValid = (req, res, next) => {
     try {
-
-       // let x=req["x-api-key"]
         if (req.query.authorId || req.body.authorId) {
             if (!mongoose.Types.ObjectId.isValid(req.query.authorId || req.body.authorId)) {
                 return res

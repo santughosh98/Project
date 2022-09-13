@@ -6,21 +6,27 @@ const authorModel = require("../Model/authorModel");
 const createBlog = async (req, res) => {
     try {
         let data = req.body;
+        if (Object.keys(data).length == 0) { return res.status(400).send({ status: false, msg: "incomplete request data/please provide more data" }) }
 
-        let { title, authorId, category, body, isPublished } = data
-        // ==Mandatory_fields== //
+        let { title, authorId, category, body, isPublished, tags, subcategory } = data
+        // ==Mandatory_fields== \\
+
         if (!title) return res.status(400).send({ status: false, msg: "Title is required" })
         if (!body) return res.status(400).send({ status: false, msg: "body is required" })
         if (!category) return res.status(400).send({ status: false, msg: "category is required" })
         if (!authorId) return res.status(400).send({ status: false, msg: "author id required" })
         //==format==\\
-
         if (typeof isPublished !== "boolean") {
             return res.status(400).send({ status: false, msg: "is Published input is needed" })
         }
+        if (typeof (title || body) !== "string") {
+            return res.status(400).send({ status: false, msg: "title/body should be in string only" })
+        }
+        if (typeof (tags || subcategory) !== "object") {
+            return res.status(400).send({ status: false, msg: "tags/subcategory should be in array of string only" })
+        }
 
         // ==Duplication== \\
-
         let authId = await authorModel.findById(authorId)
         if (!authId) { return res.status(404).send({ status: false, msg: "!!Oops author id doesn't exist" }) }
         let tokenUser = req.token.authorId
@@ -45,7 +51,7 @@ const createBlog = async (req, res) => {
 const getBlogs = async (req, res) => {
     try {
         let combination = req.query
-        let dataBlog = await blogModel.find({ $and: [{ isDeleted: false, isPublished: true }, combination] }).count()
+        let dataBlog = await blogModel.find({ $and: [{ isDeleted: false, isPublished: true }, combination] })
         if (dataBlog == 0) {
             return res.status(404).send({ status: false, msg: " No Such Blog found " })
         } else
@@ -61,16 +67,36 @@ const updateBlog = async function (req, res) {
     try {
         let data = req.params.blogId
         let update = req.body
+        //===input===\\
+        if (Object.keys(update).length == 0) { return res.status(400).send({ status: false, msg: "incomplete request data/please provide more data" }) }
+       //===format===\\
+        if (update.title || update.body ) {
+            if (typeof (update.title || update.body) !== "string") {
+                return res.status(400).send({ status: false, msg: "title/body should be in string only" })
+            }
+        }
+        if (update.tags || update.subcategory) {
+            if (typeof (update.tags || update.subcategory) !== "object") {
+                return res.status(400).send({ status: false, msg: "tags/subcategory should be in array of string only" })
+            }
+        }
+        if (update.ispublished) {
+            if (typeof update.isPublished !== "boolean") {
+                return res.status(400).send({ status: false, msg: "is Published input is needed" })
+            }
+        }
 
         let alert = await blogModel.findOne({ _id: data, isDeleted: true })
         if (alert) return res.status(404).send({ status: false, msg: "no blog found" })
+
+        //====updation====\\
         let blogs = await blogModel.findOneAndUpdate({ _id: data },
             {
                 title: update.title, body: update.body, isPublished: update.isPublished, publishedAt: Date.now()
                 , $push: { tags: update.tags, subcategory: update.subcategory }
             }, { new: true }) // , upsert: true 
         return res.status(200).send({ status: true, msg: blogs })
-    } catch (err) { res.status(500).sent({ status: false, msg: err.message }) }
+    } catch (err) { res.status(500).send({ status: false, msg: err.message }) }
 }
 
 //....................deletion1..............................................................
@@ -78,7 +104,7 @@ const updateBlog = async function (req, res) {
 const deleteBlogs = async (req, res) => {
     try {
         let BlogId = req.params.blogId
-        let findData = await blogModel.find({ _id: BlogId, isDeleted: false })
+        let findData = await blogModel.findOne({ _id: BlogId, isDeleted: false })
         if (findData.length == 0) {
             return res.status(404).send({ status: false, msg: "no blog found" })
         } else {
@@ -99,7 +125,6 @@ const deleteBlogs2 = async (req, res) => {
         let data = req.query;
         if (Object.keys(data).length == 0) { return res.status(400).send({ status: false, msg: "incomplete request data/please provide more data" }) }
         let blog = await blogModel.findOne({ $and: [{ isDeleted: false, isPublished: false }, data] })
-        console.log(blog)
         if (!blog) { return res.status(404).send({ status: false, msg: "no such blog present ok" }) }
         let authid = blog.authorId.toString()
         let tokenUser = req.token.authorId;
