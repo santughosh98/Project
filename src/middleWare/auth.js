@@ -23,40 +23,17 @@ const authenticate = (req, res, next) => {
 const authorize = async (req, res, next) => {
     try {
         let blogId = req.params.blogId;
-        let a = req.query;
-        
-        if(Object.keys(a).length==0){
-            { return res.status(400).send({ message: "No query params received. Aborting delete operation",
-         })}}
-        
-        const blog = await blogModel.find({
-            $or: [
-                { _id: blogId },
-                { tags: a.tags },
-                { category: a.category },
-                { subcategory: a.subcategory },
-            ],
-        });
-        console.log(blog)
+        const blog = await blogModel.findById(blogId);
         if (!blog) {
-            return res.status(404).send({ status: false, msg: "blog not found ok" });
+            return res.status(404).send({ status: false, msg: "blog not found" });
         }
-        
         let tokenUser = req.token.authorId;
-        if(a.authorId){
-        let logUser= a.authorId
-        if(tokenUser !== (logUser||blog.authorId)){
-
+        let logUser= blog.authorId.toString()
+        if(tokenUser !== logUser){
             return res.status(403).send({ status: false, msg: "you are not authorized 1" });
         }else{
             next()
-        }}else{
-        for(let i in blog){
-            if(blog[i].authorId==tokenUser){
-            next()
-            }else{
-                return res.status(403).send({ status: false, msg: "you are not authorized " });
-            }}}
+        }
     } catch (err) {
         return res.status(500).send({ status: false, error: err.message });
     }
