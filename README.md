@@ -8,9 +8,6 @@ https://github.com/sabihak89/radon/tree/project/blog#radon
 
 https://github.com/jai84322/project-blog.git
 
-# Radon
-
-Repository for backend cohort - Radon
 
 ## Blogging Site Mini Project Requirement
 
