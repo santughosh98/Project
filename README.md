@@ -6,7 +6,7 @@
 2- status codes ko sabko recheck karna hai phir se  -->
 
 
-https://github.com/jai84322/project-blog.git
+
 
 
 ## Blogging Site Mini Project Requirement
