@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/index.js"
   },
-  "author": "Group-09",
+  "author": "group 09",
+  "contributors": [{"name":"Prakash kumar singh,Farine parvez khan ,Biswajit swain ,Santu ghosh"}],
 
   "license": "ISC",
   "dependencies": {

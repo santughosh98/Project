@@ -33,7 +33,7 @@ const createBlog = async (req, res) => {
         if (req.body.authorId !== tokenUser) {
             return res
                 .status(400)
-                .send({ status: false, msg: "you are not authorised" });
+                .send({ status: false, msg: "you are not authorized" });
         }
         let blogcheck = await blogModel.findOne({ title: data.title, isDeleted: false })
         if (blogcheck) return res.status(400).send({ status: false, msg: "this blog is already present" })
@@ -52,9 +52,6 @@ const getBlogs = async (req, res) => {
     try {
         let combination = req.query
         let {authorId,category,tags,subcategory}=combination
-        // if(category){
-        //     category.trim()
-        // }
         let dataBlog = await blogModel.find({ $and: [{ isDeleted: false, isPublished: true }, combination] })
         if (dataBlog == 0) {
             return res.status(404).send({ status: false, msg: " No Such Blog found " })
@@ -84,7 +81,7 @@ const updateBlog = async function (req, res) {
                 return res.status(400).send({ status: false, msg: "tags/subcategory should be in array of string only" })
             }
         }
-        if (update.ispublished) {
+        if (update.isPublished) {
             if (typeof update.isPublished !== "boolean") {
                 return res.status(400).send({ status: false, msg: "is Published input is needed" })
             }
@@ -93,7 +90,7 @@ const updateBlog = async function (req, res) {
         let alert = await blogModel.findOne({ _id: data, isDeleted: true })
         if (alert) return res.status(404).send({ status: false, msg: "no blog found" })
 
-        //====updation====\\
+        //====upadation====\\
         let blogs = await blogModel.findOneAndUpdate({ _id: data },
             {
                 title: update.title, body: update.body, isPublished: update.isPublished, publishedAt: Date.now()
@@ -114,7 +111,7 @@ const deleteBlogs = async (req, res) => {
         } else {
             await blogModel.findOneAndUpdate({ _id: BlogId },
                 { $set: { isDeleted: true, deletedAt: Date.now() } })
-            return res.status(200).send({ status: true, msg: "data deleted succesfully" })
+            return res.status(200).send({ status: true, msg: "data deleted successfully" })
         }
     } catch (err) {
         res.status(500).send({ status: false, msg: err.message })
@@ -132,7 +129,7 @@ const deleteBlogs2 = async (req, res) => {
         if (!blog) { return res.status(404).send({ status: false, msg: "no such blog present ok" }) }
         let authid = blog.authorId.toString()
         let tokenUser = req.token.authorId;
-        if (authid !== tokenUser) { return res.status(403).send({ status: false, msg: "unauthorised!!user info doesn't match" }) }
+        if (authid !== tokenUser) { return res.status(403).send({ status: false, msg: "unauthorized!!user info doesn't match" }) }
         await blogModel.updateMany(data, { isDeleted: true, deletedAt: Date.now() })
         return res.status(200).send({ status: true, Deleted: "deletion of blog is completed" })
     }
